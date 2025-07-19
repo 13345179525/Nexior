@@ -1,0 +1,1 @@
+java -jar  *.jar --spring.config.location=application.yml

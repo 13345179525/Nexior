@@ -1,0 +1,92 @@
+server:
+  port: ${GATEWAY_PORT:18091}
+
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  application:
+    name: security-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: ZY_MOVE_APP_URL
+          uri: http://172.16.0.2:8000
+          predicates:
+            - Path=/hyService/dataSaveVritual/**
+
+        - id: ZY_LAYOUT
+          uri: http://172.16.0.202:54888
+          predicates:
+            - Path=/cgi-bin/app/GraphicVersion/**
+
+        - id: ZY_BOX_CHECK_OR_ZY_ZT_URL
+          uri: http://172.16.0.2:18002
+          predicates:
+            - Path=/ModelService/**
+
+        - id: ZY_GETORGS_URL_OR_ZY_LOGIN_POST_URL
+          uri: http://172.16.0.2:10801
+          predicates:
+            - Path=/dyzlTool_isc/isc/**
+
+        - id: ZY_MOVE_APP_URL
+          uri: http://172.20.0.231:31412
+          predicates:
+            - Path=/hyService/**
+
+        - id: ZY_DEVINFOSERVICE_URL
+          uri: http://172.16.0.2:10801
+          predicates:
+            - Path=/device/**
+
+        - id: fs-obs
+          uri: http://172.16.220.121:13118
+          predicates:
+            - Path=/dfs/**
+
+        - id: pmsapi
+          uri: http://172.16.0.2:10801
+          predicates:
+            - Path=/pmsapi/**
+
+        - id: wf
+          uri: http://172.16.220.121:8080
+          predicates:
+            - Path=/wf/**
+
+        - id: roles
+          uri: http://172.16.220.121:8080
+          predicates:
+            - Path=/roles/**
+
+      global-cors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: "*"
+            allowed-headers: "*"
+            allowed-methods: "*"
+            allow-credentials: true
+
+  redis:
+    database: 5
+    host: 172.16.220.121
+    password: Sgcc1234!
+    port: 32000
+security:
+  pubKey: "BBefIIZ2z/VJsuGI2Qm6B4OQx59yHCptfH3abxWjS/4byrghhuO9+F1yBCqTka+/rTz/TjQluleBz0deLT82R+k="
+  priKey: "O41wC4apYzBFSP/NBrfs5tysQJUQekoUZGN/Kz1ixsU="
+  iscUrl: "http://172.16.0.2:10801/pmsapi/dyzlTool_isc/isc/validation"
+  replay:
+    nonce-expire-seconds: 60
+
+gateway:
+  schedule:
+    tokenCleanupInterval: 900000
+  token-timout: 1
+  rate-limit:
+    window:
+      seconds: 60
+    global: 5000
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
